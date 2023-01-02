@@ -59,6 +59,7 @@ jobs:
           commit_message: update image version ${{ steps.get_version.outputs.VERSION }} in yml file
   
   trivy_scanning:
+    needs: create-and-push-image
     runs-on: ubuntu-latest
     steps:
       - name: get version
