@@ -6,14 +6,6 @@ on:
       - 'v*'
 
 jobs:
-  prepare:
-    name: Wait for other pipelines
-    needs: [
-       create-and-push-image,
-       trivy_scanning
-    ]
-    if: ${{ always() && !cancelled() && needs.build.result == 'success' }}
-
   create-and-push-image:
     runs-on: ubuntu-latest
     steps:
