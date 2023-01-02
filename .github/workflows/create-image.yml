@@ -58,7 +58,7 @@ jobs:
           user_name: rjhaikal
           commit_message: update image version ${{ steps.get_version.outputs.VERSION }} in yml file
   
-  trivy scanning:
+  trivy_scanning:
     runs-on: ubuntu-latest
     steps:
       - name: Run Trivy vulnerability scanner
