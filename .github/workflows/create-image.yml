@@ -6,6 +6,14 @@ on:
       - 'v*'
 
 jobs:
+  prepare:
+    name: Wait for other pipelines
+    needs: [
+       create-and-push-image,
+       trivy_scanning
+    ]
+    if: ${{ always() && !cancelled() && needs.build.result == 'success' }}
+
   create-and-push-image:
     runs-on: ubuntu-latest
     steps:
@@ -65,7 +73,7 @@ jobs:
         id: get-version
         run: |
           echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-          
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
