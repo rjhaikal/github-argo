@@ -51,7 +51,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: infra/calc-deployment.yml
-          destination_repo: rjhaikal/CI-CD-Github-Actions-and-Argo
+          destination_repo: rjhaikal/github-argo
           destination_branch: main
           destination_folder: infra
           user_email: majidqoba52@gmail.com
