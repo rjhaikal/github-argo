@@ -61,6 +61,11 @@ jobs:
   trivy_scanning:
     runs-on: ubuntu-latest
     steps:
+      - name: get version
+        id: get-version
+        run: |
+          echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+          
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
