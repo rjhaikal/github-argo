@@ -82,6 +82,6 @@ jobs:
       - name: ArgoCD Deploy to Staging
         run: |
           argocd login --insecure  ${{ secrets.ARGOCD_SERVER }} --username  ${{ secrets.ARGOCD_CREDS_USR }} --password  ${{ secrets.ARGOCD_CREDS_PSW}}
-          argocd app create test-app-staging --project staging --repo https://github.com/rjhaikal/jenkins-argo.git --path ./infra --dest-namespace calc-stg --dest-server https://kubernetes.default.svc --upsert
+          argocd app create test-app-staging --project staging --repo https://github.com/rjhaikal/github-argo.git --path ./infra --dest-namespace calc-stg --dest-server https://kubernetes.default.svc --upsert
           argocd --grpc-web app sync test-app-staging --force 
           argocd --grpc-web app wait test-app-staging --timeout 600
