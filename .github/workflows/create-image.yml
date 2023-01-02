@@ -75,17 +75,13 @@ jobs:
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
 
-  # deploy_staging:
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: ArgoCD Deploy to Staging
-  #       run: |
-  #         argocd login --insecure  ${{ secrets.ARGOCD_SERVER }} --username  ${{ secrets.ARGOCD_CREDS_USR }} --password  ${{ secrets.ARGOCD_CREDS_PSW}}
-  #         ARGOCD_SERVER= ${{ secrets.ARGOCD_SERVER }} argocd app create test-app-staging --project staging --repo https://github.com/rjhaikal/jenkins-argo.git --path ./infra --dest-namespace calc-stg --dest-server https://kubernetes.default.svc --upsert
-  #         IMAGE_DIGEST=$(docker image inspect $IMAGE:latest -f '{{join .RepoDigests ","}}')
-  #         ## Customize image 
-  #         ARGOCD_SERVER= ${{ secrets.ARGOCD_SERVER }} argocd --grpc-web app set test-app-staging --kustomize-image $IMAGE_DIGEST
-          
-  #         # Deploy to ArgoCD
-  #         ARGOCD_SERVER= ${{ secrets.ARGOCD_SERVER }} argocd --grpc-web app sync test-app-staging --force 
-  #         ARGOCD_SERVER= ${{ secrets.ARGOCD_SERVER }} argocd --grpc-web app wait test-app-staging --timeout 600
+  deploy_staging:
+    needs: [create-and-push-image, trivy_scanning]
+    runs-on: self-hosted
+    steps:
+      - name: ArgoCD Deploy to Staging
+        run: |
+          argocd login --insecure  ${{ secrets.ARGOCD_SERVER }} --username  ${{ secrets.ARGOCD_CREDS_USR }} --password  ${{ secrets.ARGOCD_CREDS_PSW}}
+          ARGOCD_SERVER= ${{ secrets.ARGOCD_SERVER }} argocd app create test-app-staging --project staging --repo https://github.com/rjhaikal/jenkins-argo.git --path ./infra --dest-namespace calc-stg --dest-server https://kubernetes.default.svc --upsert
+          ARGOCD_SERVER= ${{ secrets.ARGOCD_SERVER }} argocd --grpc-web app sync test-app-staging --force 
+          ARGOCD_SERVER= ${{ secrets.ARGOCD_SERVER }} argocd --grpc-web app wait test-app-staging --timeout 600
