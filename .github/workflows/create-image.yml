@@ -52,7 +52,7 @@ jobs:
         with:
           source_file: infra/calc-deployment.yml
           destination_repo: rjhaikal/github-argo
-          destination_branch: main
+          destination_branch: master
           destination_folder: infra
           user_email: majidqoba52@gmail.com
           user_name: rjhaikal
