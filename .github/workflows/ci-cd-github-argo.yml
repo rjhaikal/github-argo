@@ -40,7 +40,7 @@ jobs:
 
       - name: Update Manifest Yaml
         run: |
-          cd infra
+          cd infra/staging
           yq e -i '.spec.template.spec.containers[0].image="rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc"' calc-deployment.yml
           cat calc-deployment.yml
 
@@ -106,7 +106,7 @@ jobs:
 
       - name: Update Manifest Yaml
         run: |
-          cd infra
+          cd infra/production
           yq e -i '.spec.template.spec.containers[0].image="rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
           cat calc-deployment.yml
 
