@@ -25,10 +25,13 @@ jobs:
           docker build -t test-app:${{ steps.get-version.outputs.VERSION }}-rc .
           echo 'Created Image with name:tag = test-app:${{ steps.get-version.outputs.VERSION }}-rc'
 
-      - name: Push Images
+      - name: get-images-id
         id: image-id
         run: |
           echo ::set-output name=IMAGE_ID::$(docker images -q test-app:${{ steps.get-version.outputs.VERSION }}-rc)
+
+      - name: Push Images
+        run: |
           docker tag ${{ steps.image-id.outputs.IMAGE_ID }} rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc
           docker push rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc
 
