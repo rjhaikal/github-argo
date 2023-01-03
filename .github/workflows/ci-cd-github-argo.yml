@@ -49,7 +49,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: infra/calc-deployment.yml
+          source_file: infra/staging/calc-deployment.yml
           destination_repo: rjhaikal/github-argo
           destination_branch: staging
           destination_folder: infra/staging
@@ -115,7 +115,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: infra/calc-deployment.yml
+          source_file: infra/production/calc-deployment.yml
           destination_repo: rjhaikal/github-argo
           destination_branch: production
           destination_folder: infra/production
