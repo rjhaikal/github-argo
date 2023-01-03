@@ -6,7 +6,8 @@ on:
       - 'v*'
 
 jobs:
-  Checkout & Build Image:
+  build-image:
+    name: Checkout & Build Image
     runs-on: ubuntu-latest
     steps:
       - name: Get Version
@@ -53,8 +54,9 @@ jobs:
           user_name: rjhaikal
           commit_message: update image version ${{ steps.get_version.outputs.VERSION }} in yml file
   
-  Image Scanning:
-    needs: Checkout & Build Image
+  image-scanning:
+    name: Image Scanning
+    needs: build-image
     runs-on: ubuntu-latest
     steps:
       - name: get version
@@ -70,8 +72,9 @@ jobs:
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
 
-  Deploy Staging:
-    needs: [Checkout & Build Image, Image Scanning]
+  deploy-staging:
+    name: Deploy Staging
+    needs: [build-image, image-scanning]
     runs-on: self-hosted
     environment:
       name: Staging
@@ -83,8 +86,9 @@ jobs:
           argocd --grpc-web app sync test-app-staging --force 
           argocd --grpc-web app wait test-app-staging --timeout 600
 
-  Deploy Production:
-    needs: [Checkout & Build Image, Image Scanning, Deploy Staging]
+  deploy-production:
+    name: Deploy Production
+    needs: [build-image, image-scanning, deploy-staging]
     runs-on: self-hosted
     environment:
       name: Production
