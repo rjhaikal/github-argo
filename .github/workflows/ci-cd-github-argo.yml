@@ -31,8 +31,10 @@ jobs:
           docker tag ${{ steps.image-id.outputs.IMAGE_ID }} rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc
           docker push rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc
 
+      - name: install yq
+        uses: mikefarah/yq@v4.15.1 
+
       - name: Update Manifest Yaml
-        uses: mikefarah/yq@v4.15.1
         run: |
           cd infra
           yq e -i '.spec.template.spec.containers[0].image="rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc"' calc-deployment.yml
@@ -52,7 +54,7 @@ jobs:
           commit_message: update image version ${{ steps.get_version.outputs.VERSION }} in yml file
   
   Image Scanning:
-    needs: create-and-push-image
+    needs: Checkout & Build Image
     runs-on: ubuntu-latest
     steps:
       - name: get version
@@ -92,8 +94,10 @@ jobs:
         run: |
           echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
+      - name: install yq
+        uses: mikefarah/yq@v4.15.1 
+
       - name: Update Manifest Yaml
-        uses: mikefarah/yq@v4.15.1
         run: |
           cd infra
           yq e -i '.spec.template.spec.containers[0].image="rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
