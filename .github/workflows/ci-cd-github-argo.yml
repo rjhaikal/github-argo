@@ -108,9 +108,6 @@ jobs:
         run: |
           echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
-      - name: install yq
-        uses: mikefarah/yq@v4.15.1 
-
       - name: Update Manifest Yaml
         run: |
           cd infra/production
