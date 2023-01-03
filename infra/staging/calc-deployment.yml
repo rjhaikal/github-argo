@@ -15,7 +15,7 @@ spec:
         app: calculator-stg
     spec:
       containers:
-        - image: rjhaikal/test-app:v1.0.8-rc
+        - image: cx-harbor.btech.id/calc/test-app:v1.0.9-rc
           name: calculator-stg-container
           ports:
             - containerPort: 3000
