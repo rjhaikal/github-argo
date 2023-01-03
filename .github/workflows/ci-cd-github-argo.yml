@@ -8,7 +8,7 @@ on:
 jobs:
   build-image:
     name: Checkout & Build Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Get Version
         id: get-version
@@ -20,7 +20,7 @@ jobs:
 
       - name: Create Image
         run: |
-          echo ${{ secrets.HARBOR_PASSWORD }} | docker login -u ${{ secrets.HARBOR_USERNAME }} --password-stdin
+          echo ${{ secrets.HARBOR_PASSWORD }} | docker login ${{ secrets.HARBOR_URL }} -u ${{ secrets.HARBOR_USERNAME }} --password-stdin
           cd app
           docker build -t test-app:${{ steps.get-version.outputs.VERSION }}-rc .
           echo 'Created Image with name:tag = test-app:${{ steps.get-version.outputs.VERSION }}-rc'
@@ -33,19 +33,16 @@ jobs:
       - name: Push Images
         run: |
           # Staging Image
-          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc
-          docker push rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc
+          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} cx-harbor.btech.id/calc/test-app:${{ steps.get-version.outputs.VERSION }}-rc
+          docker push cx-harbor.btech.id/calc/test-app:${{ steps.get-version.outputs.VERSION }}-rc
           # Production Image
-          docker tag rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}
-          docker push rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}
-
-      - name: install yq
-        uses: mikefarah/yq@v4.15.1 
+          docker tag cx-harbor.btech.id/calc/test-app:${{ steps.get-version.outputs.VERSION }}-rc cx-harbor.btech.id/calc/test-app:${{ steps.get-version.outputs.VERSION }}
+          docker push cx-harbor.btech.id/calc/test-app:${{ steps.get-version.outputs.VERSION }}
 
       - name: Update Manifest Yaml
         run: |
           cd infra/staging
-          yq e -i '.spec.template.spec.containers[0].image="rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc"' calc-deployment.yml
+          yq e -i '.spec.template.spec.containers[0].image="cx-harbor.btech.id/calc/test-app:${{ steps.get-version.outputs.VERSION }}-rc"' calc-deployment.yml
           cat calc-deployment.yml
 
       - name: Push Change Back to Github
@@ -74,7 +71,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}-rc'
+          image-ref: 'cx-harbor.btech.id/calc/test-app:${{ steps.get-version.outputs.VERSION }}-rc'
           format: 'table'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
@@ -111,7 +108,7 @@ jobs:
       - name: Update Manifest Yaml
         run: |
           cd infra/production
-          yq e -i '.spec.template.spec.containers[0].image="rjhaikal/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
+          yq e -i '.spec.template.spec.containers[0].image="cx-harbor.btech.id/calc/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
           cat calc-deployment.yml
 
       - name: Push Change Back to Github
