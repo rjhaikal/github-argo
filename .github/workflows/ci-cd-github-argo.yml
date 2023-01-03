@@ -61,7 +61,7 @@ jobs:
   image-scanning:
     name: Image Scanning
     needs: build-image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: get version
         id: get-version
